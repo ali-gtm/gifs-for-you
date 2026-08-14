@@ -5,6 +5,7 @@
   var FAV_STORAGE = "stash-favorites";
   var INSTALL_DISMISS_STORAGE = "stash-install-dismissed";
   var GIPHY_BASE = "https://api.giphy.com/v1/gifs";
+  var DEFAULT_API_KEY = "IqP9nwKL45IiwQQxpvXJWirzTUM4Jjlp";
   var RATING = "pg-13";
   var LIMIT = 24;
 
@@ -49,7 +50,11 @@
   // ---------- storage ----------
 
   function getApiKey() {
-    try { return localStorage.getItem(API_KEY_STORAGE) || ""; } catch (e) { return ""; }
+    try {
+      var stored = localStorage.getItem(API_KEY_STORAGE);
+      if (stored) return stored;
+    } catch (e) {}
+    return DEFAULT_API_KEY;
   }
 
   function setApiKey(key) {
