@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#141018" />
+<title>Stash — GIF & Meme Finder</title>
+<link rel="manifest" href="./manifest.json" />
+<link rel="icon" href="./icons/icon-192.png" />
+<link rel="apple-touch-icon" href="./icons/icon-192.png" />
+<link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <span class="brand-mark">✨</span>
+    <div>
+      <h1>Stash</h1>
+      <p class="tagline">Find the perfect GIF, save it for later</p>
+    </div>
+  </div>
+  <button id="settingsBtn" class="icon-btn" title="Settings" aria-label="Settings">⚙️</button>
+</header>
+
+<main>
+  <div class="search-row">
+    <input id="searchInput" type="text" placeholder="Search GIFs & memes…" autocomplete="off" />
+    <button id="randomBtn" class="icon-btn" title="Surprise me" aria-label="Surprise me">🎲</button>
+  </div>
+
+  <nav class="tabs" id="viewTabs">
+    <button class="tab-btn active" data-view="discover">Discover</button>
+    <button class="tab-btn" data-view="favorites">Favorites <span id="favCount" class="count-pill">0</span></button>
+  </nav>
+
+  <section id="discoverView" class="view">
+    <p id="discoverLabel" class="section-label">Trending now</p>
+    <div id="discoverGrid" class="gif-grid"></div>
+    <div id="discoverEmpty" class="empty-state hidden">
+      <p class="empty-icon">🔑</p>
+      <p>Add your free Giphy API key to start searching.</p>
+      <button id="emptyOpenSettings" class="btn-primary">Add API key</button>
+    </div>
+    <div id="discoverLoading" class="loading-state hidden">Loading…</div>
+    <div id="discoverError" class="error-state hidden"></div>
+  </section>
+
+  <section id="favoritesView" class="view hidden">
+    <p class="section-label">Your saved GIFs</p>
+    <div id="favoritesGrid" class="gif-grid"></div>
+    <div id="favoritesEmpty" class="empty-state hidden">
+      <p class="empty-icon">⭐</p>
+      <p>Nothing saved yet. Tap the star on any GIF to keep it here.</p>
+    </div>
+  </section>
+</main>
+
+<div id="installToast" class="install-toast hidden">
+  <span>Install Stash for quick, offline-ready access</span>
+  <div>
+    <button id="installBtn" class="btn-primary small">Install</button>
+    <button id="dismissInstallBtn" class="btn-ghost small">Not now</button>
+  </div>
+</div>
+
+<footer>
+  <p>🔒 Your favorites stay on this device — no account, no cloud.</p>
+</footer>
+
+<!-- Preview modal -->
+<div id="previewModal" class="modal hidden">
+  <div class="modal-backdrop" data-close></div>
+  <div class="modal-inner preview-inner">
+    <button class="modal-close" data-close aria-label="Close">✕</button>
+    <img id="previewImg" alt="" />
+    <p id="previewTitle" class="preview-title"></p>
+    <div class="preview-actions">
+      <button id="previewFavBtn" class="btn-primary">⭐ Save</button>
+      <button id="previewCopyBtn" class="btn-ghost">📋 Copy link</button>
+    </div>
+    <p id="previewCopiedMsg" class="copied-msg hidden">Link copied!</p>
+  </div>
+</div>
+
+<!-- Settings modal -->
+<div id="settingsModal" class="modal hidden">
+  <div class="modal-backdrop" data-close></div>
+  <div class="modal-inner">
+    <button class="modal-close" data-close aria-label="Close">✕</button>
+    <h2>Settings</h2>
+    <div class="field">
+      <label for="apiKeyInput">Giphy API key</label>
+      <input id="apiKeyInput" type="text" placeholder="Paste your key here" autocomplete="off" spellcheck="false" />
+      <p class="hint">Free at <strong>developers.giphy.com</strong> → Create an App → API. Stored only on this device.</p>
+    </div>
+    <button id="saveKeyBtn" class="btn-primary full">Save key</button>
+    <p id="keySavedMsg" class="copied-msg hidden">Saved!</p>
+  </div>
+</div>
+
+<script src="./app.js"></script>
+</body>
+</html>
