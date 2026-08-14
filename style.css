@@ -380,16 +380,20 @@ footer {
 
 .preview-actions {
   display: flex;
-  gap: 10px;
+  flex-wrap: wrap;
+  gap: 8px;
   justify-content: center;
 }
 
 .preview-actions .btn-primary,
 .preview-actions .btn-ghost {
   flex: 1;
+  min-width: 100px;
+  padding: 12px 8px;
+  font-size: 13px;
 }
 
-.preview-actions .btn-primary.saved {
+.preview-actions .is-saved {
   background: var(--surface-2);
   color: var(--accent-2);
   border: 1px solid var(--accent-2);

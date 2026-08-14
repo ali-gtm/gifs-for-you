@@ -28,6 +28,7 @@
     previewModal: document.getElementById("previewModal"),
     previewImg: document.getElementById("previewImg"),
     previewTitle: document.getElementById("previewTitle"),
+    previewShareBtn: document.getElementById("previewShareBtn"),
     previewFavBtn: document.getElementById("previewFavBtn"),
     previewCopyBtn: document.getElementById("previewCopyBtn"),
     previewCopiedMsg: document.getElementById("previewCopiedMsg"),
@@ -280,7 +281,7 @@
     if (!state.currentPreview) return;
     var saved = isFavorited(state.currentPreview.id);
     els.previewFavBtn.textContent = saved ? "⭐ Saved" : "⭐ Save";
-    els.previewFavBtn.classList.toggle("saved", saved);
+    els.previewFavBtn.classList.toggle("is-saved", saved);
   }
 
   els.previewFavBtn.addEventListener("click", function () {
@@ -289,10 +290,10 @@
     renderPreviewFavBtn();
   });
 
-  els.previewCopyBtn.addEventListener("click", function () {
-    if (!state.currentPreview) return;
+  function copyPreviewLink() {
     var url = state.currentPreview.originalUrl;
     var done = function () {
+      els.previewCopiedMsg.textContent = "Link copied!";
       els.previewCopiedMsg.classList.remove("hidden");
       setTimeout(function () { els.previewCopiedMsg.classList.add("hidden"); }, 1600);
     };
@@ -301,6 +302,11 @@
     } else {
       fallbackCopy(url, done);
     }
+  }
+
+  els.previewCopyBtn.addEventListener("click", function () {
+    if (!state.currentPreview) return;
+    copyPreviewLink();
   });
 
   function fallbackCopy(text, done) {
@@ -313,6 +319,20 @@
     try { document.execCommand("copy"); done(); } catch (e) {}
     document.body.removeChild(ta);
   }
+
+  if (!navigator.share) {
+    els.previewShareBtn.classList.add("hidden");
+  }
+
+  els.previewShareBtn.addEventListener("click", function () {
+    if (!state.currentPreview) return;
+    var gif = state.currentPreview;
+    if (!navigator.share) { copyPreviewLink(); return; }
+    navigator.share({ title: gif.title, url: gif.originalUrl }).catch(function (err) {
+      if (err && err.name === "AbortError") return;
+      copyPreviewLink();
+    });
+  });
 
   // ---------- settings modal ----------
 
