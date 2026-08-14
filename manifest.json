@@ -1,6 +1,6 @@
 {
-  "name": "Stash — GIF & Meme Finder",
-  "short_name": "Stash",
+  "name": "GIFs For You",
+  "short_name": "GIFs",
   "description": "Search, save, and share GIFs and memes. Works offline for your saved list.",
   "start_url": "./index.html",
   "scope": "./",
