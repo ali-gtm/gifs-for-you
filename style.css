@@ -379,18 +379,19 @@ footer {
 }
 
 .preview-actions {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: 8px;
-  justify-content: center;
 }
 
 .preview-actions .btn-primary,
 .preview-actions .btn-ghost {
-  flex: 1;
-  min-width: 100px;
   padding: 12px 8px;
   font-size: 13px;
+}
+
+.preview-actions .btn-primary:disabled {
+  opacity: 0.6;
 }
 
 .preview-actions .is-saved {

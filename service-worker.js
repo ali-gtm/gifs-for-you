@@ -1,4 +1,4 @@
-var CACHE_VERSION = "stash-v2";
+var CACHE_VERSION = "stash-v3";
 var RUNTIME_CACHE = "stash-runtime-v1";
 
 var APP_SHELL = [

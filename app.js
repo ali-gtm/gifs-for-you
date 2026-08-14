@@ -29,6 +29,7 @@
     previewImg: document.getElementById("previewImg"),
     previewTitle: document.getElementById("previewTitle"),
     previewShareBtn: document.getElementById("previewShareBtn"),
+    previewDownloadBtn: document.getElementById("previewDownloadBtn"),
     previewFavBtn: document.getElementById("previewFavBtn"),
     previewCopyBtn: document.getElementById("previewCopyBtn"),
     previewCopiedMsg: document.getElementById("previewCopiedMsg"),
@@ -280,7 +281,7 @@
   function renderPreviewFavBtn() {
     if (!state.currentPreview) return;
     var saved = isFavorited(state.currentPreview.id);
-    els.previewFavBtn.textContent = saved ? "⭐ Saved" : "⭐ Save";
+    els.previewFavBtn.textContent = saved ? "⭐ Favorited" : "⭐ Favorite";
     els.previewFavBtn.classList.toggle("is-saved", saved);
   }
 
@@ -324,13 +325,75 @@
     els.previewShareBtn.classList.add("hidden");
   }
 
+  function gifFilename(gif) {
+    return "gif-" + gif.id + ".gif";
+  }
+
+  function fetchGifBlob(url) {
+    return fetch(url, { mode: "cors" }).then(function (res) {
+      if (!res.ok) throw new Error("fetch failed: " + res.status);
+      return res.blob();
+    });
+  }
+
+  function showPreviewMsg(text) {
+    els.previewCopiedMsg.textContent = text;
+    els.previewCopiedMsg.classList.remove("hidden");
+    setTimeout(function () { els.previewCopiedMsg.classList.add("hidden"); }, 2000);
+  }
+
   els.previewShareBtn.addEventListener("click", function () {
     if (!state.currentPreview) return;
     var gif = state.currentPreview;
     if (!navigator.share) { copyPreviewLink(); return; }
-    navigator.share({ title: gif.title, url: gif.originalUrl }).catch(function (err) {
-      if (err && err.name === "AbortError") return;
-      copyPreviewLink();
+
+    var shareAsLink = function () {
+      navigator.share({ title: gif.title, url: gif.originalUrl }).catch(function (err) {
+        if (err && err.name === "AbortError") return;
+        copyPreviewLink();
+      });
+    };
+
+    if (navigator.canShare) {
+      fetchGifBlob(gif.originalUrl).then(function (blob) {
+        var file = new File([blob], gifFilename(gif), { type: blob.type || "image/gif" });
+        if (navigator.canShare({ files: [file] })) {
+          return navigator.share({ files: [file], title: gif.title });
+        }
+        return shareAsLink();
+      }).catch(function (err) {
+        if (err && err.name === "AbortError") return;
+        shareAsLink();
+      });
+    } else {
+      shareAsLink();
+    }
+  });
+
+  els.previewDownloadBtn.addEventListener("click", function () {
+    if (!state.currentPreview) return;
+    var gif = state.currentPreview;
+    var btn = els.previewDownloadBtn;
+    var originalText = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = "Saving…";
+
+    fetchGifBlob(gif.originalUrl).then(function (blob) {
+      var blobUrl = URL.createObjectURL(blob);
+      var a = document.createElement("a");
+      a.href = blobUrl;
+      a.download = gifFilename(gif);
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(function () { URL.revokeObjectURL(blobUrl); }, 4000);
+      showPreviewMsg("GIF saved to your device!");
+    }).catch(function () {
+      window.open(gif.originalUrl, "_blank");
+      showPreviewMsg("Opened in a new tab — long-press to save.");
+    }).finally(function () {
+      btn.disabled = false;
+      btn.textContent = originalText;
     });
   });
 
